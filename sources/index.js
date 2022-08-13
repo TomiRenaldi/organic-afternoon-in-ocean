@@ -88,7 +88,7 @@ consume.water = new Water(
 consume.water.rotation.x = - Math.PI / 2
 scene.add(consume.water)
 
-// Sky
+// Skybox
 consume.sky = new Sky()
 consume.sky.scale.setScalar(10000)
 scene.add(consume.sky)
@@ -108,8 +108,8 @@ const renderer = new THREE.WebGLRenderer({
   antialias: true,
 })
 renderer.toneMapping = THREE.ACESFilmicToneMapping
-renderer.outputEncoding = THREE.sRGBEncoding
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
+renderer.outputEncoding = THREE.sRGBEncoding
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
@@ -118,6 +118,7 @@ const parameters = {
   azimuth: 180
 }
 
+// PMREMGenerate
 const pmremGenerator = new THREE.PMREMGenerator(renderer)
 let renderTargets
 
@@ -137,6 +138,7 @@ const updateSun = () => {
 
 updateSun()
 
+// Hand
 const loader = new GLTFLoader()
 loader.load('./assets/hand.glb', (gltf) => {
   const model = gltf.scene
@@ -152,6 +154,7 @@ loader.load('./assets/hand.glb', (gltf) => {
   })
 })
 
+// Navigate
 const folderSky = debug.addFolder('Sky')
 folderSky.add(parameters, 'elevation', 0, 90, 0.1).onChange(updateSun)
 folderSky.add(parameters, 'azimuth', - 180, 180, 0.1).onChange(updateSun)
