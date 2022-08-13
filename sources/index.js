@@ -1,9 +1,8 @@
 import './style.css'
 import * as THREE from 'three'
-import Stats from 'stats.js'
+import { GUI } from 'lil-gui'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { GUI } from 'lil-gui'
 import { Water } from 'three/examples/jsm/objects/Water.js'
 import { Sky } from 'three/examples/jsm/objects/Sky.js'
 
@@ -108,16 +107,14 @@ const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
   antialias: true,
 })
-
 renderer.toneMapping = THREE.ACESFilmicToneMapping
+renderer.outputEncoding = THREE.sRGBEncoding
+renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
-// Stats
-const stats = new Stats()
-
 const parameters = {
-  elevation: 0.5,
+  elevation: 0.1,
   azimuth: 180
 }
 
@@ -143,7 +140,7 @@ updateSun()
 const loader = new GLTFLoader()
 loader.load('./assets/hand.glb', (gltf) => {
   const model = gltf.scene
-  model.scale.set(5, 5, 5)
+  model.scale.set(3, 3, 3)
   scene.add(model)
 
   model.traverse((child) => {
@@ -183,9 +180,6 @@ const tick = () => {
 
   // Update controls
   controls.update()
-
-  // Stats Update
-  stats.update()
 
   // Render
   renderer.render(scene, camera)
