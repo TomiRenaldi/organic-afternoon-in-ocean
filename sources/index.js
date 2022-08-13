@@ -1,8 +1,8 @@
 import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { Water } from 'three/examples/jsm/objects/Water.js';
-import { Sky } from 'three/examples/jsm/objects/Sky.js';
+import { Water } from 'three/examples/jsm/objects/Water.js'
+import { Sky } from 'three/examples/jsm/objects/Sky.js'
 
 /**
  * Base
@@ -40,10 +40,10 @@ window.addEventListener('resize', () => {
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 1
-camera.position.y = 1
-camera.position.z = 1
+const camera = new THREE.PerspectiveCamera(55, sizes.width / sizes.height, 1, 20000)
+camera.position.x = 30
+camera.position.y = 30
+camera.position.z = 100
 scene.add(camera)
 
 // Controls
@@ -51,24 +51,15 @@ const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
 /**
- * Renderer
- */
-const renderer = new THREE.WebGLRenderer({
-  canvas: canvas,
-  antialias: true,
-})
-
-renderer.setSize(sizes.width, sizes.height)
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
-/**
  * Consume
  */
 const consume = {}
 consume.sun = new THREE.Vector3()
 
-consume.waterGeometry = new THREE.PlaneGeometry(10000, 10000)
+// Water Geometry
+consume.waterGeometry = new THREE.PlaneGeometry(25000, 25000)
 
+// Water Material
 consume.water = new Water(
   consume.waterGeometry,
   {
@@ -88,6 +79,54 @@ consume.water = new Water(
 consume.water.rotation.x = - Math.PI / 2
 scene.add(consume.water)
 
+// Sky
+consume.sky = new Sky()
+consume.sky.scale.setScalar(10000)
+scene.add(consume.sky)
+
+const skyUniforms = consume.sky.material.uniforms
+
+skyUniforms['turbidity'].value = 10
+skyUniforms['rayleigh'].value = 2
+skyUniforms['mieCoefficient'].value = 0.005
+skyUniforms['mieDirectionalG'].value = 0.8
+
+/**
+ * Renderer
+ */
+const renderer = new THREE.WebGLRenderer({
+  canvas: canvas,
+  antialias: true,
+})
+
+renderer.toneMapping = THREE.ACESFilmicToneMapping
+renderer.setSize(sizes.width, sizes.height)
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+const parameters = {
+  elevation: 2,
+  azimuth: 180
+}
+
+const pmremGenerator = new THREE.PMREMGenerator(renderer)
+let renderTargets
+
+const updateSun = () => {
+  const phi = THREE.MathUtils.degToRad(90 - parameters.elevation)
+  const theta = THREE.MathUtils.degToRad(parameters.azimuth)
+
+  consume.sun.setFromSphericalCoords(1, phi, theta)
+
+  consume.sky.material.uniforms['sunPosition'].value.copy(consume.sun)
+  consume.water.material.uniforms['sunDirection'].value.copy(consume.sun).normalize()
+
+  if (renderTargets !== undefined) renderTargets.dispose()
+  renderTargets = pmremGenerator.fromScene(consume.sky)
+  scene.environment = renderTargets.texture
+}
+
+updateSun()
+
 /**
  * Animate
  */
@@ -98,6 +137,9 @@ const tick = () => {
   const elapsedTime = clock.getElapsedTime()
   const deltaTime = elapsedTime - lastElapsedTime
   lastElapsedTime = elapsedTime
+
+  // Update Consume
+  consume.water.material.uniforms['time'].value += 0.5 / 60.0
 
   // Update controls
   controls.update()
