@@ -1,4 +1,4 @@
-# Three Template Simple
+# Organic Afternoon in Ocean
 
 ## Setup
 Download [Node.js](https://nodejs.org/en/download/).
@@ -13,3 +13,15 @@ npm run dev
 
 # Build for production in the dist/ directory
 npm 
+```
+
+
+# TODO
+
+- [x] Sky
+- [ ] Water
+- [ ] Elevation
+- [ ] Azimuth Sky
+- [ ] Size Water
+- [ ] Distortion Water
+- [ ] Model
