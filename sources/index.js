@@ -1,8 +1,8 @@
 import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import Sky from './consume/Sky.js'
-import Water from './consume/Water.js'
+import { Water } from 'three/examples/jsm/objects/Water.js';
+import { Sky } from 'three/examples/jsm/objects/Sky.js';
 
 /**
  * Base
@@ -51,18 +51,6 @@ const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
 /**
- * Cube
- */
-const cube = {}
-
-cube.geometry = new THREE.BoxGeometry(1, 1, 1)
-
-cube.material = new THREE.MeshBasicMaterial({ wireframe: true })
-
-cube.mesh = new THREE.Mesh(cube.geometry, cube.material)
-scene.add(cube.mesh)
-
-/**
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
@@ -72,6 +60,33 @@ const renderer = new THREE.WebGLRenderer({
 
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+/**
+ * Consume
+ */
+const consume = {}
+consume.sun = new THREE.Vector3()
+
+consume.waterGeometry = new THREE.PlaneGeometry(10000, 10000)
+
+consume.water = new Water(
+  consume.waterGeometry,
+  {
+    textureWidth: 512,
+    textureHeight: 512,
+    waterNormals: new THREE.TextureLoader().load('./assets/water-normals.jpg', (texture) => {
+      texture.wrapS = texture.wrapT = THREE.RepeatWrapping
+    }),
+    sunDirection: new THREE.Vector3(),
+    sunColor: 0xffffff,
+    waterColor: 0x001e0f,
+    distortionScale: 3.7,
+    fog: scene.fog !== undefined
+  }
+)
+
+consume.water.rotation.x = - Math.PI / 2
+scene.add(consume.water)
 
 /**
  * Animate
