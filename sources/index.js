@@ -52,6 +52,10 @@ scene.add(camera)
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
+controls.maxPolarAngle = Math.PI * 0.495
+controls.target.set(0, 10, 0)
+controls.minDistance = 40.0
+controls.maxDistance = 200.0
 controls.enableDamping = true
 
 /**
@@ -108,7 +112,7 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 const parameters = {
-  elevation: 2,
+  elevation: 0.5,
   azimuth: 180
 }
 
