@@ -1,5 +1,6 @@
 import './style.css'
 import * as THREE from 'three'
+import Stats from 'stats.js'
 import { GUI } from 'lil-gui'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { Water } from 'three/examples/jsm/objects/Water.js'
@@ -111,6 +112,9 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
+// Stats
+const stats = new Stats()
+
 const parameters = {
   elevation: 0.5,
   azimuth: 180
@@ -156,6 +160,9 @@ const tick = () => {
 
   // Update controls
   controls.update()
+
+  // Stats Update
+  stats.update()
 
   // Render
   renderer.render(scene, camera)
