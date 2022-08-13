@@ -1,5 +1,6 @@
 import './style.css'
 import * as THREE from 'three'
+import { GUI } from 'lil-gui'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { Water } from 'three/examples/jsm/objects/Water.js'
 import { Sky } from 'three/examples/jsm/objects/Sky.js'
@@ -13,6 +14,9 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
+// Debug
+const debug = new GUI()
 
 /**
  * Sizes
@@ -57,7 +61,7 @@ const consume = {}
 consume.sun = new THREE.Vector3()
 
 // Water Geometry
-consume.waterGeometry = new THREE.PlaneGeometry(25000, 25000)
+consume.waterGeometry = new THREE.PlaneGeometry(20000, 20000)
 
 // Water Material
 consume.water = new Water(
@@ -126,6 +130,11 @@ const updateSun = () => {
 }
 
 updateSun()
+
+const folderSky = debug.addFolder('Sky')
+folderSky.add(parameters, 'elevation', 0, 90, 0.1).onChange(updateSun)
+folderSky.add(parameters, 'azimuth', - 180, 180, 0.1).onChange(updateSun)
+folderSky.open()
 
 /**
  * Animate
