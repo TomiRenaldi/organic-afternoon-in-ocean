@@ -1,8 +1,9 @@
 import './style.css'
 import * as THREE from 'three'
 import Stats from 'stats.js'
-import { GUI } from 'lil-gui'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { GUI } from 'lil-gui'
 import { Water } from 'three/examples/jsm/objects/Water.js'
 import { Sky } from 'three/examples/jsm/objects/Sky.js'
 
@@ -138,6 +139,21 @@ const updateSun = () => {
 }
 
 updateSun()
+
+const loader = new GLTFLoader()
+loader.load('./assets/hand.glb', (gltf) => {
+  const model = gltf.scene
+  model.scale.set(5, 5, 5)
+  scene.add(model)
+
+  model.traverse((child) => {
+    if (child instanceof THREE.Mesh)
+    {
+      child.castShadow = true
+      child.receiveShadow = true
+    }
+  })
+})
 
 const folderSky = debug.addFolder('Sky')
 folderSky.add(parameters, 'elevation', 0, 90, 0.1).onChange(updateSun)
