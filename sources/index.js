@@ -66,7 +66,7 @@ const consume = {}
 consume.sun = new THREE.Vector3()
 
 // Water Geometry
-consume.waterGeometry = new THREE.PlaneGeometry(20000, 20000)
+consume.waterGeometry = new THREE.PlaneGeometry(10000, 10000)
 
 // Water Material
 consume.water = new Water(
